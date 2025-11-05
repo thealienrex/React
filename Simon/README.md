@@ -1,8 +1,10 @@
 # D&D Nite
 
-Welcome to my mini project built with React, **D&D Nite**.
+Welcome to my mini project built with React, **Simon**.
 
-This web app lets you build a list of available D&D players, with selection criteria of available days, timezone, and player/GM preference. The list of available players dynamically changes as you choose criteria, culminating in a potential group of players/GMs.
+This web app simulates the old Simon game, where the machine gives you a sequence of colors and you have to repeat it back. 
+
+The project is mid-stream, as I need to address some issues with state.
 
 
 The app is currently only available in development mode. To start the app, you can run: 
