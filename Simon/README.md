@@ -1,4 +1,4 @@
-# D&D Nite
+# Simon
 
 Welcome to my mini project built with React, **Simon**.
 
