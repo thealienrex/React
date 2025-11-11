@@ -1,97 +1,99 @@
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
+  background-color: #075379;
+}
+
+main {
+  margin: 0 auto;
+  width: 45%;
 }
 
 header {
   margin: 0;
-  background-color: #075379;
   color: #ffffff;
-  position: fixed;
-  top: 0;
   width: 100%;
-  height: 150px;
-}
-
-header div {
-  padding: 15px 15px 15px 25px;
 }
 
 header h1 {
-  font-size: 48px;
+  font-size: 64px;
   font-family: serif;
   margin: 0;
+  text-align: center;
 }
 
 header p {
-  margin: 5px 0 0 0;
+  margin: 5px 0 20px 0;
   font-weight: bold;
+  text-align: center;
 }
 
 nav {
-  background-color: #4599ed;
-  padding: 10px 10px 10px 25px;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
+  text-align: center;
+  width: 70%;
+  margin: 0 auto 30px;
+  background-color: #1684bb;
+  border-radius: 10px;
 }
 
-nav a {
-  margin-right: 20px;
-  text-decoration: none;
+nav button {
   color: #ffffff;
   font-weight: bold;
   font-size: 0.8rem;
+  border: none;
+  width: 50%;
+  border-radius: 10px;
+  padding: 15px 0;
+  background-color: #1684bb;
+  background-image: none;
 }
 
-section {
-  padding: 10px 20px 0 40px;
-  margin: 160px 0 60px;
+nav button.active {
+  background-color: #96bae4;
 }
 
-section.home {
-  padding: 0;
-  min-height: 700px;
-  margin-top: 143px;
-  background-image: url("../public/Screenshot-2025-06-27-at-13.26.29.jpg");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100%;
+nav button :first {
+  margin-right: 50px;
 }
 
 label {
   font-weight: bold;
 }
 
-/*----- Player Entry Form ------*/
-.addPlayerContainer {
-  width: 100%;
-}
-
-.addPlayerContainer h3 {
+h1 {
+  text-align: center;
+  color: #ffffff;
+  padding: 10px 0;
   margin: 0;
 }
 
-.addPlayerContainer em {
-  font-size: 10px;
-  display: block;
-  margin-bottom: 10px;
+h3 {
+  color: #ffffff;
+  margin: 0 0 10px 0;
 }
 
-.addPlayerForm {
-  width: 40%;
+/*----- Player Entry Form ------*/
+
+.addPlayerContainer em {
+  font-size: 0.65rem;
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .addPlayerFormFields {
-  border: 1px solid gray;
-  border-radius: 5px;
   padding: 0 20px 20px;
-  width: fit-content;
+}
+
+.addPlayerTop {
+  display: inline-block;
+  width: 50%;
+  margin: 10px 0 25px;
 }
 
 .addPlayerFormFields label,
@@ -103,36 +105,43 @@ label {
 
 .addPlayerFormFields input[type="text"],
 .addPlayerFormFields input[type="email"] {
-  width: 250px;
+  width: 85%;
 }
-
-/* .addPlayerFormFields input[type="checkbox"],
-.addPlayerFormFields select {
-  width: 100%;
-} */
 
 /*----- Search for players ------*/
-.findPlayersPage h3 {
-  margin: 0 0 10px;
-}
 
+.addPlayerContainer,
 .findPlayersFilters {
+  background-color: #023149;
+  border-radius: 20px;
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+h3 .directionText {
+  font-size: 0.6rem;
+}
+
+.dayList,
+.timezList,
+.ptypeList {
   display: grid;
-  grid-template-columns: auto auto auto;
-  width: 30%;
-  border: 1px solid blue;
-  border-radius: 5px;
-  padding: 0 0 10px 20px;
+  grid-template-columns: auto auto auto auto auto;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
-.findPlayersFilters div {
-  display: inline-block;
-  margin-right: 30px;
-  width: fit-content;
+button {
+  background-image: linear-gradient(45deg, #026ba0, #318ebc);
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  color: #ffffff;
+  font-weight: bold;
 }
 
-.findPlayersFilters button {
-  margin-top: 15px;
+.findPlayersFilters button.reset {
+  margin: 15px 0;
   width: fit-content;
   background-color: blue;
   color: #ffffff;
@@ -141,21 +150,31 @@ label {
   border-radius: 5px;
 }
 
+button.active {
+  background-image: linear-gradient(45deg, #ab6606, #e5a54b);
+}
+
 label.ptype {
   display: inline;
   margin-left: 5px;
 }
 .playerInfoBox {
-  margin-top: 20px;
+  margin: 20px 0 10px;
 }
 .playerInfo:nth-child(odd) {
   background-color: #e6eaf9;
 }
+.playerInfo:nth-child(even) {
+  color: #ffffff;
+}
+
+.playerInfo:nth-child(even) a {
+  color: #ffffff;
+}
 
 .playerInfo {
-  padding: 20px;
   display: grid;
-  grid-template-columns: 200px 250px 130px 150px;
+  grid-template-columns: 30% 30% 20% 20%;
 }
 
 .playerInfo h4,
@@ -163,11 +182,19 @@ label.ptype {
   margin: 0;
 }
 
+.playerInfo div {
+  word-wrap: break-word;
+  padding: 20px 10px;
+}
+
+.addSuccess {
+  color: #ffffff;
+}
+
 .footer {
-  position: fixed;
   bottom: 0;
-  width: 100%;
-  background-color: #4599ed;
+  background-color: #023149;
   color: #fff;
+  border-radius: 10px;
   padding: 10px 10px 10px 25px;
 }

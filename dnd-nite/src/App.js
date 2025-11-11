@@ -10,32 +10,29 @@ export default function App() {
   }
 
   function handlePageSelect(e) {
-    e.preventDefault();
-    let pageChoice = Number(e.target.name);
+    let pageChoice = e;
 
     if (pageChoice !== visiblePage) {
-      setVisiblePage(Number(e.target.name));
+      setVisiblePage(e);
     }
   }
 
   return (
-    <>
-      <Header onPageSelect={handlePageSelect} />
-      <section className={visiblePage === 0 ? "home" : ""}>
-        {visiblePage === 1 ? (
-          <AddPlayers onAdd={handlePlayerAdd} />
-        ) : visiblePage === 2 ? (
+    <main>
+      <Header onPageSelect={handlePageSelect} viz={visiblePage} />
+      <section>
+        {visiblePage === 0 ? (
           <FindPlayers groupy={players} />
         ) : (
-          <></>
+          <AddPlayers onAdd={handlePlayerAdd} />
         )}
       </section>
       <Footer />
-    </>
+    </main>
   );
 }
 
-function Header({ onPageSelect }) {
+function Header({ onPageSelect, viz }) {
   return (
     <header>
       <div>
@@ -43,15 +40,18 @@ function Header({ onPageSelect }) {
         <p>Assemble your adventuring party here.</p>
       </div>
       <nav>
-        <a name="0" href="http://" onClick={(e) => onPageSelect(e)}>
-          Home
-        </a>
-        <a name="1" href="http://" onClick={(e) => onPageSelect(e)}>
-          Add Players
-        </a>
-        <a name="2" href="http://" onClick={(e) => onPageSelect(e)}>
+        <button
+          className={viz === 0 ? "find active" : "find"}
+          onClick={() => onPageSelect(0)}
+        >
           Find Players
-        </a>
+        </button>
+        <button
+          className={viz === 1 ? "add active" : "add"}
+          onClick={() => onPageSelect(1)}
+        >
+          Add Players
+        </button>
       </nav>
     </header>
   );
@@ -78,7 +78,7 @@ function AddPlayers({ onAdd }) {
       alert("You must fill in all fields!");
       return;
     }
-    const id = crypto.randomUUID();
+    const id = Date.now() + Math.random() * 1000;
 
     const newPlayer = {
       id,
@@ -97,17 +97,17 @@ function AddPlayers({ onAdd }) {
     setEmail("");
     setAvailDay([]);
     setTimez("");
-    /* setPtype([]); */
+    setPtype([]);
   }
 
   return (
     <div className="addPlayerContainer">
-      <h3>Add Players</h3>
+      <h1>Add Players</h1>
       <em>Continental US, Canada, and Mexico only, please</em>
-      <div className="addPlayerForm">
-        <div className="addPlayerFormFields">
-          <form onSubmit={handleSubmit}>
-            <label>Player Name</label>
+      <div className="addPlayerFormFields">
+        <form onSubmit={handleSubmit}>
+          <div className="addPlayerTop">
+            <h3>Player Name</h3>
             <input
               type="text"
               value={name}
@@ -116,7 +116,9 @@ function AddPlayers({ onAdd }) {
                 setSuccess(false);
               }}
             />
-            <label>Email</label>
+          </div>
+          <div className="addPlayerTop">
+            <h3>Email</h3>
             <input
               type="email"
               value={email}
@@ -126,13 +128,27 @@ function AddPlayers({ onAdd }) {
                 setSuccess(false);
               }}
             />
-            <DaysList daylist={availDay} onDaysAdd={setAvailDay} />
-            <Timezone timez={timez} onTimezAdd={setTimez} />
-            <PlayerType onPtype={setPtype} ptyper={ptype} />
-            <button>Add Player</button>
-          </form>
-        </div>
-        {success ? <p>A new player has been added!</p> : ""}
+          </div>
+          <h3>
+            Days Available{" "}
+            <span className="directionText">(select multiple)</span>
+          </h3>
+          <DaysList daylist={availDay} onDaysAdd={setAvailDay} />
+          <h3>
+            Timezone <span className="directionText">(choose one)</span>
+          </h3>
+          <Timezone timez={timez} onTimezAdd={setTimez} />
+          <h3>
+            Player Type <span className="directionText">(select multiple)</span>
+          </h3>
+          <PlayerType onPtype={setPtype} ptyper={ptype} />
+          <button type="submit">Add Player</button>
+          {success ? (
+            <p className="addSuccess">A new player has been added!</p>
+          ) : (
+            ""
+          )}
+        </form>
       </div>
     </div>
   );
@@ -164,27 +180,35 @@ function FindPlayers({ groupy }) {
 
   useEffect(() => {
     setFilter(
-      groupy.filter((el) => {
-        if (
+      groupy.filter(
+        (el) =>
           (daysz.length === 0 ||
-            el.availDay.some((ele) => daysz.includes(ele))) &&
-          (tzone === "" || tzone === el.timez) &&
-          (ptypef.length === 0 || el.ptype.some((elf) => ptypef.includes(elf)))
-        ) {
-          return el;
-        }
-      })
+            el.availDay.some((day) => daysz.includes(day))) &&
+          (tzone === "" || el.timez === tzone) &&
+          (ptypef.length === 0 ||
+            el.ptype.some((type) => ptypef.includes(type)))
+      )
     );
   }, [daysz, tzone, ptypef, groupy]);
 
   return (
     <div className="findPlayersPage">
-      <h3>Find Players</h3>
       <div className="findPlayersFilters">
+        <h1>Find Players</h1>
+        <h3>
+          Available days{" "}
+          <span className="directionText">(select multiple)</span>
+        </h3>
         <DaysList daylist={daysz} onDaysAdd={handleDay} />
+        <h3>Timezone</h3>
         <Timezone timez={tzone} onTimezAdd={handleTimeZone} />
+        <h3>
+          Player Type <span className="directionText">(select multiple)</span>
+        </h3>
         <PlayerType onPtype={handlePlayerChoice} ptyper={ptypef} />
-        <button onClick={resetItAll}>Reset</button>
+        <button onClick={resetItAll} className="reset">
+          Reset
+        </button>
       </div>
       <FilteredList finalGroup={filtergroup} />
     </div>
@@ -233,58 +257,137 @@ function PlayerInfo({ peep }) {
 }
 
 function DaysList({ daylist, onDaysAdd }) {
-  function handleMulti(e) {
-    let value = Array.from(e.target.selectedOptions, (option) => option.value);
-    onDaysAdd(value);
+  function handleMultiDay(e) {
+    let dayIndex = daylist.indexOf(e);
+    if (dayIndex >= 0) {
+      onDaysAdd(daylist.filter((day) => day !== e));
+    } else {
+      onDaysAdd([...daylist, e]);
+    }
   }
   return (
-    <div>
-      <label>Available days</label>
-      <select value={daylist} multiple onChange={(e) => handleMulti(e)}>
-        <option>Monday</option>
-        <option>Tuesday</option>
-        <option>Wednesday</option>
-        <option>Thursday</option>
-        <option>Friday</option>
-        <option>Saturday</option>
-        <option>Sunday</option>
-      </select>
+    <div className="dayList">
+      <button
+        type="button"
+        className={daylist.includes("Monday") ? "active" : ""}
+        onClick={() => handleMultiDay("Monday")}
+      >
+        Monday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Tuesday") ? "active" : ""}
+        onClick={() => handleMultiDay("Tuesday")}
+      >
+        Tuesday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Wednesday") ? "active" : ""}
+        onClick={() => handleMultiDay("Wednesday")}
+      >
+        Wednesday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Thursday") ? "active" : ""}
+        onClick={() => handleMultiDay("Thursday")}
+      >
+        Thursday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Friday") ? "active" : ""}
+        onClick={() => handleMultiDay("Friday")}
+      >
+        Friday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Saturday") ? "active" : ""}
+        onClick={() => handleMultiDay("Saturday")}
+      >
+        Saturday
+      </button>
+      <button
+        type="button"
+        className={daylist.includes("Sunday") ? "active" : ""}
+        onClick={() => handleMultiDay("Sunday")}
+      >
+        Sunday
+      </button>
     </div>
   );
 }
 
 function Timezone({ timez, onTimezAdd }) {
-  function handleTimeAdd(e) {
-    onTimezAdd(e);
-  }
   return (
-    <div>
-      <label>Timezone</label>
-      <select value={timez} onChange={(e) => handleTimeAdd(e.target.value)}>
-        <option value="">Choose one:</option>
-        <option>Alaskan</option>
-        <option>Pacific</option>
-        <option>Mountain</option>
-        <option>Central</option>
-        <option>Eastern</option>
-      </select>
+    <div className="timezList">
+      <button
+        type="button"
+        className={timez === "Alaskan" ? "active" : ""}
+        onClick={() => onTimezAdd("Alaskan")}
+      >
+        Alaskan
+      </button>
+      <button
+        type="button"
+        className={timez === "Pacific" ? "active" : ""}
+        onClick={() => onTimezAdd("Pacific")}
+      >
+        Pacific
+      </button>
+      <button
+        type="button"
+        className={timez === "Mountain" ? "active" : ""}
+        onClick={() => onTimezAdd("Mountain")}
+      >
+        Mountain
+      </button>
+      <button
+        type="button"
+        className={timez === "Central" ? "active" : ""}
+        onClick={() => onTimezAdd("Central")}
+      >
+        Central
+      </button>
+      <button
+        type="button"
+        className={timez === "Eastern" ? "active" : ""}
+        onClick={() => onTimezAdd("Eastern")}
+      >
+        Eastern
+      </button>
     </div>
   );
 }
 
 function PlayerType({ onPtype, ptyper }) {
   function handleMulti(e) {
-    let value = Array.from(e.target.selectedOptions, (option) => option.value);
-    onPtype(value);
+    let isPresent = ptyper.indexOf(e);
+    if (isPresent >= 0) {
+      onPtype(ptyper.filter((item) => item !== e));
+    } else {
+      onPtype([...ptyper, e]);
+    }
   }
 
   return (
-    <div>
-      <label>Player Type</label>
-      <select value={ptyper} multiple size="2" onChange={(e) => handleMulti(e)}>
-        <option>Player</option>
-        <option>GM</option>
-      </select>
+    <div className="ptypeList">
+      <button
+        type="button"
+        className={ptyper.includes("Player") ? "active" : ""}
+        onClick={() => handleMulti("Player")}
+      >
+        Player
+      </button>
+      <button
+        type="button"
+        className={ptyper.includes("GM") ? "active" : ""}
+        onClick={() => handleMulti("GM")}
+      >
+        GM
+      </button>
     </div>
   );
 }
